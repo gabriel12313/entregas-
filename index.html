@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gestão de Entregas</title>
+<style>
+:root{--bg:#f4f6f8;--card:#fff;--tx:#1b2430;--mu:#64707e;--bd:#d9dfe6;--ac:#e8590c;--ac2:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12161b;--card:#1c232b;--tx:#e8edf2;--mu:#98a3b0;--bd:#2f3944}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{background:var(--ac);color:#fff;padding:14px 16px;font-weight:700;font-size:18px}
+nav{display:flex;gap:6px;padding:10px 12px;overflow-x:auto}
+nav button{flex:1;min-width:110px;padding:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:8px;font-size:15px;cursor:pointer}
+nav button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+main{max-width:960px;margin:0 auto;padding:0 12px 40px}
+section{display:none}section.on{display:block}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:14px}
+h2{font-size:17px;margin:0 0 10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+label{font-size:13px;color:var(--mu);display:block}
+input,select{width:100%;padding:9px;margin-top:3px;border:1px solid var(--bd);border-radius:7px;background:var(--bg);color:var(--tx);font-size:15px}
+button.p{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:10px 16px;font-size:15px;cursor:pointer;margin-top:12px}
+button.s{background:none;border:1px solid var(--bd);color:var(--tx);border-radius:6px;padding:5px 9px;cursor:pointer;font-size:13px}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:8px;border-bottom:1px solid var(--bd);white-space:nowrap}
+th{color:var(--mu);font-weight:600}
+.empty{color:var(--mu);padding:8px}
+.badge{width:260px;border:2px solid var(--ac);border-radius:14px;overflow:hidden;background:#fff;color:#111;text-align:center;margin:8px 10px 8px 0;display:inline-block;vertical-align:top}
+.badge .top{background:var(--ac);color:#fff;padding:10px;font-weight:700}
+.badge .ph{width:110px;height:110px;border-radius:50%;background:#dde3ea;margin:14px auto 8px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:40px;color:#7b8794}
+.badge .ph img{width:100%;height:100%;object-fit:cover}
+.badge .nm{font-size:19px;font-weight:700;padding:0 8px}
+.badge .in{font-size:13px;color:#444;padding:2px 8px}
+.badge .id{background:#111;color:#fff;margin-top:12px;padding:8px;font-family:monospace;letter-spacing:2px}
+body:not(.isadm) .adm{display:none!important}
+.qr{display:flex;justify-content:center;margin-top:10px}.qr img,.qr canvas{background:#fff}
+.pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:12px;background:var(--bd)}
+@media print{body *{visibility:hidden}.printing,.printing *{visibility:visible}.printing{position:absolute;left:0;top:0}header,nav{display:none}}
+</style></head><body>
+<div id="toast" style="display:none;position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 8px);z-index:99;max-width:92%;padding:12px 16px;border-radius:10px;background:#1b2430;color:#fff;border:2px solid #e8590c;font-size:15px"></div>
+<header style="display:flex;justify-content:space-between;align-items:center">🚚 Gestão de Entregas<button class="s" id="b-lg" style="color:#fff;border-color:#fff">🔒 Administrador</button></header>
+<nav id="nav" class="adm"></nav>
+<main>
+<div id="alerts" class="adm"></div>
+<section id="s-ent" class="on">
+ <div class="card"><h2>Novo protocolo de entrega</h2>
+ <div class="grid">
+  <label>Crachá (código)<input id="e-cd" placeholder="ENT-0001"></label>
+  <label>&nbsp;<button class="s" type="button" id="b-sc2" style="width:100%;padding:10px">📷 Ler crachá</button></label>
+  <label>Veículo<select id="e-vh"></select></label>
+  <label>Data<input type="date" id="e-dt"></label>
+  <label>Local / destino<input id="e-lc" placeholder="Endereço ou cliente"></label>
+  <label>Hora de saída<input type="time" id="e-hs"></label>
+  <label>Odômetro saída (km)<input type="number" id="e-os" min="0"></label>
+ </div><button class="p" id="b-ent">Registrar saída</button></div>
+ <div class="card"><h2>Ler crachá (saída ou chegada)</h2><button class="p" id="b-sc" style="margin-top:0">📷 Ler QR do crachá</button><video id="cam" playsinline muted style="display:none;width:100%;max-width:360px;margin-top:10px;border-radius:8px"></video><label style="margin-top:10px">Ou digite / bipe o código<input id="cd" placeholder="ENT-0001"></label></div>
+ <div class="card adm"><h2>Relatório mensal</h2><label>Mês<input type="month" id="rm"></label><button class="p" id="b-rp">Gerar relatório</button> <button class="p" id="b-rm">✉️ Enviar por e-mail</button> <button class="s" id="b-rd">⬇️ Baixar .txt</button><pre id="rp" style="white-space:pre-wrap;font-family:inherit;margin-top:10px"></pre></div>
+ <div class="card adm"><h2>Protocolos</h2><div class="tw" id="l-ent"></div></div>
+</section>
+<section id="s-dr" class="adm">
+ <div class="card"><h2>Cadastrar entregador</h2>
+ <div class="grid">
+  <label>Nome completo<input id="d-nm"></label>
+  <label>Documento (CPF/CNH)<input id="d-dc"></label>
+  <label>Telefone<input id="d-tl"></label>
+  <label>Foto<input type="file" accept="image/*" id="d-ft"></label>
+ </div><button class="p" id="b-dr">Salvar e gerar crachá</button></div>
+ <div class="card"><h2>Entregadores e crachás</h2><div id="l-dr"></div>
+ <button class="s" id="b-pr" style="margin-top:8px">🖨️ Imprimir todos os crachás</button></div>
+</section>
+<section id="s-vh" class="adm">
+ <div class="card"><h2>E-mail para avisos de manutenção</h2><label>E-mail<input type="email" id="em" placeholder="voce@empresa.com"></label></div>
+ <div class="card"><h2>Cadastrar veículo</h2>
+ <div class="grid">
+  <label>Placa<input id="v-pl" style="text-transform:uppercase"></label>
+  <label>Modelo<input id="v-md"></label>
+  <label>Tipo<select id="v-tp"><option>Moto</option><option>Carro</option><option>Van</option><option>Caminhão</option><option>Bicicleta</option></select></label>
+  <label>Odômetro atual (km)<input type="number" id="v-od" min="0"></label>
+  <label>Troca de óleo a cada (km)<input type="number" id="v-io" min="0" placeholder="ex: 5000"></label>
+  <label>Revisão a cada (km)<input type="number" id="v-ir" min="0" placeholder="ex: 10000"></label>
+ </div><button class="p" id="b-vh">Salvar veículo</button></div>
+ <div class="card"><h2>Veículos</h2><div class="tw" id="l-vh"></div></div>
+</section>
+</main>
+<dialog id="dlg2" style="border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);max-width:320px"><div id="aq"></div><input id="ai" type="number" min="0" style="display:none"><div style="margin-top:12px;display:flex;gap:8px"><button class="p" id="aok" style="margin:0">OK</button><button class="s" id="acn">Cancelar</button></div></dialog>
+<dialog id="dlg" style="border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);max-width:320px"><h2 id="dt"></h2><label>Usuário<input id="du" autocomplete="username"></label><label style="margin-top:8px">Senha<input id="dp" type="password" autocomplete="current-password"></label><div id="de" style="color:#d00;margin-top:8px"></div><div style="margin-top:12px;display:flex;gap:8px"><button class="p" id="dok" style="margin:0">Entrar</button><button class="s" id="dcn">Cancelar</button></div></dialog>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.js"></script>
+<script>
+const K='entregas_v1';let S={dr:[],vh:[],en:[]};
+try{S=JSON.parse(localStorage.getItem(K))||S}catch(e){}
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
+const $=i=>document.getElementById(i);
+function msg(m){const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(msg.h);msg.h=setTimeout(()=>t.style.display='none',7000)}
+window.onerror=(m,s,l)=>msg('Erro no site: '+m+' (linha '+l+')');
+function ask(q,def){return new Promise(res=>{const d=$('dlg2'),i=$('ai');$('aq').textContent=q;i.style.display=def===undefined?'none':'block';if(def!==undefined)i.value=def;
+ const end=v=>{d.close();res(v)};$('aok').onclick=()=>end(def===undefined?'':i.value);$('acn').onclick=()=>end(null);d.oncancel=()=>res(null);d.showModal()})}
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+const br=d=>d?d.split('-').reverse().join('/'):'';
+const now=()=>new Date().toTimeString().slice(0,5);
+const tabs=[['s-ent','Entregas'],['s-dr','Entregadores'],['s-vh','Veículos']];
+$('nav').innerHTML=tabs.map(t=>`<button data-t="${t[0]}">${t[1]}</button>`).join('');
+function show(id){document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===id));
+ document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===id));}
+$('nav').onclick=e=>{if(e.target.dataset.t)show(e.target.dataset.t)};
+const dn=id=>(S.dr.find(x=>x.id===id)||{}).nome||'—';
+const vn=id=>{const v=S.vh.find(x=>x.id===id);return v?v.placa+' · '+v.modelo:'—'};
+function badge(d){return `<div class="badge" id="bd-${d.id}"><div class="top">ENTREGADOR</div>
+<div class="ph">${d.foto?`<img src="${d.foto}" alt="">`:'👤'}</div>
+<div class="nm">${esc(d.nome)}</div><div class="in">Doc: ${esc(d.doc)}</div><div class="in">Tel: ${esc(d.tel)}</div>
+<div class="qr" data-q="${esc(d.cod)}"></div><div class="id">${esc(d.cod)}</div></div>`}
+function render(){render0();alerts();document.querySelectorAll('.qr').forEach(q=>{if(!q.firstChild&&window.QRCode)new QRCode(q,{text:q.dataset.q,width:96,height:96})})}
+function render0(){
+
+ $('e-vh').innerHTML=S.vh.map(v=>`<option value="${v.id}">${esc(v.placa)} · ${esc(v.modelo)}</option>`).join('')||'<option value="">Cadastre um veículo</option>';
+ $('l-dr').innerHTML=S.dr.length?S.dr.map(d=>`<div style="display:inline-block;vertical-align:top">${badge(d)}<div><button class="s" data-pr="${d.id}">🖨️ Imprimir</button> <button class="s" data-rm="dr:${d.id}">Excluir</button></div></div>`).join(''):'<div class="empty">Nenhum entregador cadastrado.</div>';
+ $('l-vh').innerHTML=S.vh.length?`<table><tr><th>Placa</th><th>Modelo</th><th>Tipo</th><th>Odômetro</th><th>Manutenção</th><th></th></tr>${S.vh.map(v=>`<tr><td>${esc(v.placa)}</td><td>${esc(v.modelo)}</td><td>${esc(v.tipo)}</td><td>${v.od} km</td><td>${mt(v)}</td><td><button class="s" data-mo="${v.id}">Óleo feito</button> <button class="s" data-mr="${v.id}">Revisão feita</button> <button class="s" data-rm="vh:${v.id}">Excluir</button></td></tr>`).join('')}</table>`:'<div class="empty">Nenhum veículo cadastrado.</div>';
+ $('l-ent').innerHTML=S.en.length?`<table><tr><th>Data</th><th>Entregador</th><th>Veículo</th><th>Local</th><th>Saída</th><th>Km saída</th><th>Chegada</th><th>Km chegada</th><th>Rodado</th><th></th></tr>${S.en.slice().reverse().map(e=>`<tr><td>${br(e.data)}</td><td>${esc(dn(e.dr))}</td><td>${esc(vn(e.vh))}</td><td>${esc(e.local)}</td><td>${e.hs}</td><td>${e.os}</td>
+ <td>${e.hc||'<span class="pill">em rota</span>'}</td><td>${e.oc??''}</td><td>${e.oc!=null?(e.oc-e.os)+' km':''}</td>
+ <td>${e.hc?'':`<button class="s" data-ch="${e.id}">Registrar chegada</button> `}<button class="s" data-rm="en:${e.id}">Excluir</button></td></tr>`).join('')}</table>`:'<div class="empty">Nenhum protocolo registrado.</div>';
+}
+$('e-dt').value=new Date().toISOString().slice(0,10);$('e-hs').value=now();
+$('e-vh').onchange=()=>{const v=S.vh.find(x=>x.id===$('e-vh').value);if(v)$('e-os').value=v.od};
+$('b-vh').onclick=()=>{const p=$('v-pl').value.trim().toUpperCase(),m=$('v-md').value.trim();
+ if(!p||!m)return msg('Informe placa e modelo.');
+ S.vh.push({id:uid(),placa:p,modelo:m,tipo:$('v-tp').value,od:+$('v-od').value||0,io:+$('v-io').value||0,ir:+$('v-ir').value||0,uo:+$('v-od').value||0,ur:+$('v-od').value||0});save();
+ ['v-pl','v-md','v-od'].forEach(i=>$(i).value='');render();};
+$('b-dr').onclick=()=>{const n=$('d-nm').value.trim();if(!n)return msg('Informe o nome.');
+ const f=$('d-ft').files[0];
+ const add=foto=>{const cod='ENT-'+String(S.dr.length+1).padStart(4,'0');
+  S.dr.push({id:uid(),nome:n,doc:$('d-dc').value,tel:$('d-tl').value,foto,cod});save();
+  ['d-nm','d-dc','d-tl','d-ft'].forEach(i=>$(i).value='');render();};
+ if(!f)return add('');
+ const im=new Image(),r=new FileReader();
+ r.onload=()=>{im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=200;const x=c.getContext('2d');
+  const s=Math.min(im.width,im.height);x.drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,200,200);add(c.toDataURL('image/jpeg',.8))};im.src=r.result};
+ r.readAsDataURL(f);};
+$('b-ent').onclick=()=>{const dd=S.dr.find(a=>a.cod===$('e-cd').value.trim().toUpperCase());if(!dd)return msg('Crachá não encontrado. Fotografe o QR ou digite o código.');if(!$('e-vh').value)return msg('Escolha o veículo.');if(S.en.some(a=>a.dr===dd.id&&!a.hc))return msg('Você já tem uma entrega em rota. Registre a chegada primeiro.');
+ if(!$('e-lc').value.trim()||$('e-os').value==='')return msg('Informe local e odômetro de saída.');
+ S.en.push({id:uid(),dr:dd.id,vh:$('e-vh').value,data:$('e-dt').value,local:$('e-lc').value.trim(),hs:$('e-hs').value,os:+$('e-os').value,hc:'',oc:null});
+ save();$('e-lc').value='';$('e-cd').value='';$('e-hs').value=now();render();msg('Saída registrada. Boa entrega, '+dd.nome+'!');};
+document.body.addEventListener('click',async e=>{const t=e.target;
+ if(t.dataset.ch)arrive(S.en.find(a=>a.id===t.dataset.ch));
+ if(t.dataset.mo){const v=S.vh.find(a=>a.id===t.dataset.mo);v.uo=v.od;save();render();}
+ if(t.dataset.mr){const v=S.vh.find(a=>a.id===t.dataset.mr);v.ur=v.od;save();render();}
+ if(t.dataset.rm){const[k,id]=t.dataset.rm.split(':');if(await ask('Excluir este registro?')===null)return;
+  const m={dr:'dr',vh:'vh',en:'en'}[k];S[m]=S[m].filter(a=>a.id!==id);save();render();}
+ if(t.dataset.pr){const b=$('bd-'+t.dataset.pr);b.classList.add('printing');window.print();b.classList.remove('printing');}
+ if(t.id==='b-pr'){const l=$('l-dr');l.classList.add('printing');window.print();l.classList.remove('printing');}});
+async function arrive(x){const o=await ask('Odômetro na chegada (km):',x.os);
+ if(o===null)return;if(isNaN(+o)||+o<x.os)return msg('Odômetro inválido.');
+ x.oc=+o;x.hc=now();const v=S.vh.find(a=>a.id===x.vh);if(v)v.od=x.oc;save();render();
+ if(v){const p=due(v).filter(a=>a.left<=500);if(p.length)msg('⚠️ '+v.placa+': '+p.map(a=>a.t+(a.left<=0?' vencida':' em '+a.left+' km')).join(' e ')+'. Veja o aviso no topo para enviar o e-mail.')}}
+function due(v){const r=[];if(v.io)r.push({t:'Troca de óleo',n:v.uo+v.io});if(v.ir)r.push({t:'Revisão',n:v.ur+v.ir});return r.map(x=>({...x,left:x.n-v.od}))}
+const mt=v=>due(v).map(x=>x.t+': '+(x.left<=0?'<b style="color:#d00">VENCIDA</b>':x.left<=500?'<b style="color:#d98a00">faltam '+x.left+' km</b>':'faltam '+x.left+' km')).join('<br>')||'—';
+function alerts(){const em=S.email||'';const a=[];S.vh.forEach(v=>due(v).forEach(x=>{if(x.left<=500)a.push({v,x})}));
+ $('alerts').innerHTML=a.map(({v,x})=>{const msg=x.t+' do veículo '+v.placa+' ('+v.modelo+'): odômetro '+v.od+' km, previsto para '+x.n+' km ('+(x.left<=0?'vencida há '+(-x.left)+' km':'faltam '+x.left+' km')+').';
+  return `<div class="card" style="border-color:#d00">⚠️ ${esc(msg)} <a href="mailto:${esc(em)}?subject=${encodeURIComponent('Manutenção '+v.placa)}&body=${encodeURIComponent(msg)}">✉️ Enviar e-mail</a></div>`}).join('')+(new Date().getDate()>=28||new Date().getDate()<=3?'<div class="card" style="border-color:#e8590c">📅 Virada de mês: gere e envie o relatório mensal (aba Entregas).</div>':'')}
+let stream;
+function stop(){if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;$('cam').style.display='none'}
+async function scan(cb){cb=cb||ident;try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}})}catch(e){return msg('A câmera ao vivo foi bloqueada ('+(e.name||'erro')+'). Use um leitor USB/Bluetooth ou digite o código.')}
+ const v=$('cam');v.srcObject=stream;v.style.display='block';await v.play();
+ const c=document.createElement('canvas'),x=c.getContext('2d',{willReadFrequently:true});
+ const tick=()=>{if(!stream)return;if(v.videoWidth){c.width=v.videoWidth;c.height=v.videoHeight;x.drawImage(v,0,0);const r=jsQR(x.getImageData(0,0,c.width,c.height).data,c.width,c.height);if(r&&r.data){stop();cb(r.data);return}}requestAnimationFrame(tick)};tick()}
+function ident(code){code=code.trim().toUpperCase();const d=S.dr.find(a=>a.cod===code);if(!d)return msg('Crachá não encontrado: '+code);
+ const x=S.en.find(a=>a.dr===d.id&&!a.hc);if(!x){$('e-cd').value=d.cod;return msg('Olá, '+d.nome+'! Preencha data, destino, veículo e odômetro e toque em Registrar saída.')}
+ msg('Olá, '+d.nome+'! Veículo: '+vn(x.vh));arrive(x)}
+function readQR(cb){const f=document.createElement('input');f.type='file';f.accept='image/*';f.setAttribute('capture','environment');
+ f.onchange=()=>{const file=f.files[0];if(!file)return;const im=new Image();im.onload=()=>{const c=document.createElement('canvas');const s=Math.min(1,1000/Math.max(im.width,im.height));c.width=im.width*s;c.height=im.height*s;const x=c.getContext('2d');x.drawImage(im,0,0,c.width,c.height);const r=jsQR(x.getImageData(0,0,c.width,c.height).data,c.width,c.height);r&&r.data?cb(r.data):msg('Não consegui ler o QR. Tente de novo, mais perto e com boa luz, ou digite o código.')};im.src=URL.createObjectURL(file)};f.click()}
+async function sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('ent:'+s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+const dlg=$('dlg');
+$('b-lg').onclick=()=>{if(document.body.classList.contains('isadm')){document.body.classList.remove('isadm');$('b-lg').textContent='🔒 Administrador';show('s-ent');return}
+ $('dt').textContent=S.adm?'Acesso do administrador':'Criar administrador (primeiro acesso)';$('dok').textContent=S.adm?'Entrar':'Criar';$('du').value=$('dp').value='';$('de').textContent='';dlg.showModal()};
+$('dcn').onclick=()=>dlg.close();
+$('dok').onclick=async()=>{const u=$('du').value.trim(),p=$('dp').value;if(!u||p.length<4)return ($('de').textContent='Informe usuário e senha (mínimo 4 caracteres).');const h=await sha(p);
+ if(!S.adm){S.adm={u,h};save()}else if(u!==S.adm.u||h!==S.adm.h)return ($('de').textContent='Usuário ou senha incorretos.');
+ dlg.close();document.body.classList.add('isadm');$('b-lg').textContent='Sair';show('s-ent');render()};
+$('b-sc2').onclick=()=>scan(c=>{$('e-cd').value=c.trim().toUpperCase()});
+$('e-cd').onkeydown=e=>{if(e.key==='Enter')ident($('e-cd').value)};
+function report(m){const E=S.en.filter(e=>e.data&&e.data.startsWith(m));const f=t=>+t.slice(0,2)*60+ +t.slice(3,5);
+ const mins=e=>{if(!e.hc)return null;let d=f(e.hc)-f(e.hs);if(d<0)d+=1440;return d};
+ const by={},lc={};let lg=null;
+ E.forEach(e=>{const n=dn(e.dr),d=mins(e),b=by[n]||(by[n]={c:0,t:0,k:0});b.c++;if(d!=null){b.t+=d;b.k++;if(!lg||d>lg.d)lg={d,n,l:e.local}}
+  const l=e.local.trim().toLowerCase(),o=lc[l]||(lc[l]={n:e.local.trim(),c:0});o.c++});
+ const top=(o,g)=>Object.entries(o).sort((a,b)=>g(b[1])-g(a[1]))[0];
+ const h=x=>Math.floor(x/60)+'h'+String(Math.round(x%60)).padStart(2,'0');
+ const L=['RELATÓRIO DE ENTREGAS — '+m.split('-').reverse().join('/'),'','Total de entregas: '+E.length];
+ if(E.length){const a=top(by,b=>b.c);L.push('Entregador com mais entregas: '+a[0]+' ('+a[1].c+')');
+  const t=Object.entries(by).filter(x=>x[1].k).sort((a,b)=>b[1].t/b[1].k-a[1].t/a[1].k)[0];
+  if(t)L.push('Entregador com maior tempo médio por entrega: '+t[0]+' ('+h(t[1].t/t[1].k)+')');
+  if(lg)L.push('Entrega mais demorada: '+h(lg.d)+' — '+lg.n+' em '+lg.l);
+  const p=top(lc,o=>o.c);L.push('Local com mais entregas: '+p[1].n+' ('+p[1].c+')')}
+ L.push('','REVISÕES DOS VEÍCULOS');
+ S.vh.forEach(v=>{const d=due(v);L.push(v.placa+' ('+v.modelo+') — '+v.od+' km'+(d.length?': '+d.map(x=>x.t+' '+(x.left<=0?'VENCIDA':'faltam '+x.left+' km')).join('; '):': sem intervalos cadastrados'))});
+ if(!S.vh.length)L.push('Nenhum veículo cadastrado.');
+ return L.join('\n')}
+$('rm').value=new Date().toISOString().slice(0,7);
+$('b-rd').onclick=async()=>{const t=report($('rm').value);$('rp').textContent=t;try{const d=window.claude?await claude.use('downloads'):null;if(!d){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download='relatorio-'+$('rm').value+'.txt';a.click();return}await d.save({filename:'relatorio-'+$('rm').value+'.txt',data:t})}catch(e){}};
+$('b-rp').onclick=()=>{$('rp').textContent=report($('rm').value)};
+$('b-rm').onclick=()=>{const t=report($('rm').value);$('rp').textContent=t;if(!S.email)return msg('Cadastre o e-mail na aba Veículos.');
+ const a=document.createElement('a');a.href='mailto:'+S.email+'?subject='+encodeURIComponent('Relatório mensal de entregas')+'&body='+encodeURIComponent(t);a.click()};
+$('b-sc').onclick=()=>scan();$('cd').onkeydown=e=>{if(e.key==='Enter'){ident($('cd').value);$('cd').value=''}};
+$('em').value=S.email||'';$('em').onchange=()=>{S.email=$('em').value;save();render()};
+show('s-ent');render();
+</script></body></html>
