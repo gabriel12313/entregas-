@@ -43,7 +43,7 @@ body:not(.isadm) .adm{display:none!important}
 </style></head><body>
 <div id="toast" style="display:none;position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 8px);z-index:99;max-width:92%;padding:12px 16px;border-radius:10px;background:#1b2430;color:#fff;border:2px solid #bf1e2e;font-size:15px"></div>
 <header style="display:flex;justify-content:space-between;align-items:center"><span style="display:flex;align-items:center;gap:10px"><img id="hl" alt="Rodonorte" style="height:42px;border-radius:6px"> Gestão de Entregas <small id="st" style="font-weight:400;font-size:12px;opacity:.9"></small></span><button class="s" id="b-in" style="display:none;color:#fff;border-color:#fff;margin-right:6px">📲 Instalar</button><button class="s" id="b-lg" style="color:#fff;border-color:#fff">🔒 Administrador</button></header>
-<nav id="nav" class="adm"></nav>
+<nav id="nav"></nav>
 <main>
 <div id="alerts" class="adm"></div>
 <section id="s-ent" class="on">
@@ -57,13 +57,13 @@ body:not(.isadm) .adm{display:none!important}
   <label>Hora de saída<input type="time" id="e-hs"></label>
   <label>Odômetro saída (km)<input type="number" id="e-os" min="0"></label>
  </div>
- <h2 style="font-size:15px;margin:14px 0 2px">Checklist de saída</h2>
+ <div id="ckbox" style="display:none"><h2 style="font-size:15px;margin:14px 0 2px">Checklist de saída (primeira saída do dia neste veículo)</h2>
  <label class="cb"><input type="checkbox" class="ck">Pneus em bom estado</label>
  <label class="cb"><input type="checkbox" class="ck">Luzes, setas e freio funcionando</label>
  <label class="cb"><input type="checkbox" class="ck">Combustível suficiente</label>
  <label class="cb"><input type="checkbox" class="ck">Documentos do veículo e CNH comigo</label>
  <label class="cb"><input type="checkbox" class="ck">Veículo sem avarias novas</label>
- <label>Observações / avarias<input id="e-av" placeholder="Obrigatório se algum item não estiver OK"></label>
+ <label>Observações / avarias<input id="e-av" placeholder="Obrigatório se algum item não estiver OK"></label></div>
  <button class="p" id="b-ent">Registrar saída</button></div>
  <div class="card"><h2>Ler crachá (saída ou chegada)</h2><button class="p" id="b-sc" style="margin-top:0">📷 Ler QR do crachá</button><video id="cam" playsinline muted style="display:none;width:100%;max-width:360px;margin-top:10px;border-radius:8px"></video><label style="margin-top:10px">Ou digite / bipe o código<input id="cd" placeholder="ENT-0001"></label></div>
  <div class="card adm"><h2>Relatório mensal</h2><label>Mês<input type="month" id="rm"></label><button class="p" id="b-rp">Gerar relatório</button> <button class="p" id="b-rw">📲 Enviar no WhatsApp</button> <button class="p" id="b-rm">✉️ Enviar por e-mail</button> <button class="s" id="b-rd">⬇️ Baixar .txt</button><pre id="rp" style="white-space:pre-wrap;font-family:inherit;margin-top:10px"></pre></div>
@@ -107,8 +107,10 @@ body:not(.isadm) .adm{display:none!important}
  </div><button class="p" id="b-mt">Registrar manutenção</button></div>
  <div class="card"><h2>Histórico de manutenção</h2><label>Filtrar por veículo<select id="m-fl"></select></label><div id="m-tot" style="margin:10px 0;font-weight:600"></div><div class="tw" id="l-mt"></div></div>
 </section>
-<section id="s-dp" class="adm">
+<section id="s-dp">
  <div class="card"><h2>Registrar despacho de peças</h2><div class="grid">
+  <label>Crachá (código)<input id="p-cd" placeholder="ENT-0001"></label>
+  <label>&nbsp;<button class="s" type="button" id="b-sc3" style="width:100%;padding:10px">📷 Ler crachá</button></label>
   <label>Data<input type="date" id="p-dt"></label>
   <label>Transportadora / Correios<input id="p-tr"></label>
   <label>Destino (cliente / cidade)<input id="p-ds"></label>
@@ -118,7 +120,7 @@ body:not(.isadm) .adm{display:none!important}
   <label>Foto do comprovante de despacho<input type="file" accept="image/*" capture="environment" id="p-f1"></label>
   <label>Foto do produto ou da caixa<input type="file" accept="image/*" capture="environment" id="p-f2"></label>
  </div><button class="p" id="b-dp">Registrar despacho</button></div>
- <div class="card"><h2>Despachos</h2><div class="tw" id="l-dp"></div></div>
+ <div class="card adm"><h2>Despachos</h2><div class="tw" id="l-dp"></div></div>
 </section>
 </main>
 <dialog id="dlg3" style="border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);width:94%;max-width:380px"><h2>Comprovante de entrega</h2>
@@ -176,7 +178,7 @@ const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,5);
 const br=d=>d?d.split('-').reverse().join('/'):'';
 const now=()=>new Date().toTimeString().slice(0,5);
 const tabs=[['s-ent','Entregas'],['s-dr','Entregadores'],['s-vh','Veículos'],['s-mt','Manutenção'],['s-dp','Despacho']];
-$('nav').innerHTML=tabs.map(t=>`<button data-t="${t[0]}">${t[1]}</button>`).join('');
+$('nav').innerHTML=tabs.map(t=>`<button data-t="${t[0]}"${['s-ent','s-dp'].includes(t[0])?'':' class="adm"'}>${t[1]}</button>`).join('');
 function show(id){document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===id));
  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===id));}
 $('nav').onclick=e=>{if(e.target.dataset.t)show(e.target.dataset.t)};
@@ -191,9 +193,9 @@ function render0(){
 
  $('e-vh').innerHTML=S.vh.map(v=>`<option value="${v.id}">${esc(v.placa)} · ${esc(v.modelo)}</option>`).join('')||'<option value="">Cadastre um veículo</option>';
  $('l-dr').innerHTML=S.dr.length?S.dr.map(d=>`<div style="display:inline-block;vertical-align:top">${badge(d)}<div style="font-size:13px;margin-bottom:6px">${vTxt('CNH',d.cnh)} <button class="s" data-mc="${d.id}">Alterar</button></div><div><button class="s" data-pr="${d.id}">🖨️ Imprimir</button> <button class="s" data-rm="dr:${d.id}">Excluir</button></div></div>`).join(''):'<div class="empty">Nenhum entregador cadastrado.</div>';
- $('l-vh').innerHTML=S.vh.length?`<table><tr><th>Placa</th><th>Modelo</th><th>Tipo</th><th>Odômetro</th><th>Licenc.</th><th>Manutenção</th><th></th></tr>${S.vh.map(v=>`<tr><td>${esc(v.placa)}</td><td>${esc(v.modelo)}</td><td>${esc(v.tipo)}</td><td>${v.od} km</td><td>${vTxt('',v.lic)} <button class="s" data-ml="${v.id}">Alterar</button></td><td>${mt(v)}</td><td><button class="s" data-mo="${v.id}">Óleo feito</button> <button class="s" data-mr="${v.id}">Revisão feita</button> <button class="s" data-rm="vh:${v.id}">Excluir</button></td></tr>`).join('')}</table>`:'<div class="empty">Nenhum veículo cadastrado.</div>';
+ $('l-vh').innerHTML=S.vh.length?`<table><tr><th>Placa</th><th>Modelo</th><th>Tipo</th><th>Odômetro</th><th>Licenc.</th><th>Manutenção</th><th></th></tr>${S.vh.map(v=>`<tr><td>${esc(v.placa)}</td><td>${esc(v.modelo)}</td><td>${esc(v.tipo)}</td><td>${v.od} km</td><td>${vTxt('',v.lic)} <button class="s" data-ml="${v.id}">Alterar</button></td><td>${mt(v)}</td><td><button class="s" data-mo="${v.id}">Óleo feito</button> <button class="s" data-mr="${v.id}">Revisão feita</button> <button class="s" data-rk="${v.id}">Pedir checklist</button> <button class="s" data-rm="vh:${v.id}">Excluir</button></td></tr>`).join('')}</table>`:'<div class="empty">Nenhum veículo cadastrado.</div>';
  $('l-ent').innerHTML=S.en.length?`<table><tr><th>Data</th><th>Entregador</th><th>Veículo</th><th>Local</th><th>Saída</th><th>Km saída</th><th>Chegada</th><th>Km chegada</th><th>Rodado</th><th>Checklist</th><th>Recebedor</th><th></th></tr>${S.en.slice().reverse().map(e=>`<tr><td>${br(e.data)}</td><td>${esc(dn(e.dr))}</td><td>${esc(vn(e.vh))}</td><td>${esc(e.local)}</td><td>${e.hs}</td><td>${e.os}</td>
- <td>${e.hc||'<span class="pill">em rota</span>'}</td><td>${e.oc??''}</td><td>${e.oc!=null?(e.oc-e.os)+' km':''}</td><td>${e.ck===undefined?'':String(e.ck).includes('0')?'⚠️ '+esc(e.av||''):'✓'}</td><td>${esc(e.rec||'')} ${e.pf?`<button class="s" data-pv="${e.id}">Ver comprovante</button>`:''}</td>
+ <td>${e.hc||'<span class="pill">em rota</span>'}</td><td>${e.oc??''}</td><td>${e.oc!=null?(e.oc-e.os)+' km':''}</td><td>${!e.ck?'—':String(e.ck).includes('0')?'⚠️ '+esc(e.av||''):'✓'}</td><td>${esc(e.rec||'')} ${e.pf?`<button class="s" data-pv="${e.id}">Ver comprovante</button>`:''}</td>
  <td>${e.hc?'':`<button class="s" data-ch="${e.id}">Registrar chegada</button> `}<button class="s" data-rm="en:${e.id}">Excluir</button></td></tr>`).join('')}</table>`:'<div class="empty">Nenhum protocolo registrado.</div>';
 }
 $('e-dt').value=new Date().toISOString().slice(0,10);$('e-hs').value=now();
@@ -215,16 +217,20 @@ $('b-dr').onclick=()=>{const n=$('d-nm').value.trim();if(!n)return msg('Informe 
 $('b-ent').onclick=async()=>{const dd=await findDr($('e-cd').value);if(!dd)return msg('Crachá não encontrado. Fotografe o QR ou digite o código.');if(!$('e-vh').value)return msg('Escolha o veículo.');if(S.en.some(a=>a.dr===dd.id&&!a.hc))return msg('Você já tem uma entrega em rota. Registre a chegada primeiro.');
  if(dd.cnh&&daysTo(dd.cnh)<0)return msg('Sua CNH está vencida ('+br(dd.cnh)+'). Fale com o responsável antes de sair.');
  const vh0=S.vh.find(a=>a.id===$('e-vh').value);if(vh0&&vh0.lic&&daysTo(vh0.lic)<0)return msg('O licenciamento deste veículo está vencido ('+br(vh0.lic)+'). Escolha outro ou fale com o responsável.');
- const cks=[...document.querySelectorAll('.ck')].map(c=>c.checked?1:0).join(''),av=$('e-av').value.trim();
- if(cks.includes('0')&&!av)return msg('Há itens do checklist sem marcar. Marque todos ou descreva o problema em Observações.');
+ const vid=$('e-vh').value,need=!(await ckDone(dd.id,vid));$('ckbox').style.display=need?'block':'none';
+ let cks='',av='';if(need){cks=[...document.querySelectorAll('.ck')].map(c=>c.checked?1:0).join('');av=$('e-av').value.trim();
+  if(cks.includes('0')&&!av)return msg('Primeira saída de hoje com este veículo: preencha o checklist de saída (marque todos os itens ou descreva o problema) e toque em Registrar saída de novo.')}
  if(!$('e-lc').value.trim()||$('e-os').value==='')return msg('Informe local e odômetro de saída.');
- const en={id:uid(),dr:dd.id,vh:$('e-vh').value,data:$('e-dt').value,local:$('e-lc').value.trim(),hs:$('e-hs').value,os:+$('e-os').value,hc:'',oc:null,ck:cks,av:av};S.en.push(en);put('entries',en);document.querySelectorAll('.ck').forEach(c=>c.checked=false);$('e-av').value='';$('e-lc').value='';$('e-cd').value='';$('e-hs').value=now();render();msg('Saída registrada. Boa entrega, '+dd.nome+'!');};
+ const en={id:uid(),dr:dd.id,vh:$('e-vh').value,data:$('e-dt').value,local:$('e-lc').value.trim(),hs:$('e-hs').value,os:+$('e-os').value,hc:'',oc:null,ck:cks,av:av};S.en.push(en);put('entries',en);if(need)markCk(dd.id,vid);$('ckbox').style.display='none';document.querySelectorAll('.ck').forEach(c=>c.checked=false);$('e-av').value='';$('e-lc').value='';$('e-cd').value='';$('e-hs').value=now();render();msg('Saída registrada. Boa entrega, '+dd.nome+'!');};
 document.body.addEventListener('click',async e=>{const t=e.target;
  if(t.dataset.ch)arrive(S.en.find(a=>a.id===t.dataset.ch));
  if(t.dataset.mo){const v=S.vh.find(a=>a.id===t.dataset.mo);v.uo=v.od;upd('vehicles',v.id,{uo:v.uo});addMt(v,'Troca de óleo',v.od,0,'');render();}
  if(t.dataset.mr){const v=S.vh.find(a=>a.id===t.dataset.mr);v.ur=v.od;upd('vehicles',v.id,{ur:v.ur});addMt(v,'Revisão',v.od,0,'');render();}
  if(t.dataset.rm){const[k,id]=t.dataset.rm.split(':');if(await ask('Excluir este registro?')===null)return;
   S[k]=S[k].filter(a=>a.id!==id);del({dr:'drivers',vh:'vehicles',en:'entries',mt:'maint',dp:'dispatches'}[k],id);if(CLOUD&&k==='en')db.collection('proofs').doc(id).delete().catch(()=>{});if(CLOUD&&k==='dp')db.collection('dfiles').doc(id).delete().catch(()=>{});render();}
+ if(t.dataset.rk){if(await ask('Hoje, todos os entregadores terão que refazer o checklist neste veículo na próxima saída. Confirmar?')===null)return;
+  if(CLOUD){try{const s=await db.collection('ckdone').where('vh','==',t.dataset.rk).get();const bt=db.batch();s.docs.forEach(d=>bt.delete(d.ref));await bt.commit()}catch(e){return fe(e)}}else{S.cd=Object.fromEntries(Object.entries(S.cd||{}).filter(([k])=>!k.includes('_'+t.dataset.rk+'_')));save()}
+  msg('Pronto: o próximo entregador a sair com este veículo fará o checklist.')}
  if(t.dataset.ml){const v=S.vh.find(a=>a.id===t.dataset.ml);const d=await ask('Novo vencimento do licenciamento de '+v.placa+':',v.lic||'','date');if(d){v.lic=d;upd('vehicles',v.id,{lic:d});render()}}
  if(t.dataset.mc){const v=S.dr.find(a=>a.id===t.dataset.mc);const d=await ask('Nova validade da CNH de '+v.nome+':',v.cnh||'','date');if(d){v.cnh=d;upd('drivers',v.id,{cnh:d});render()}}
  if(t.dataset.pv){let p=null;try{if(CLOUD){const s=await db.collection('proofs').doc(t.dataset.pv).get();p=s.exists?s.data():null}else p=(S.pr||{})[t.dataset.pv]}catch(e){return fe(e)}
@@ -233,6 +239,11 @@ document.body.addEventListener('click',async e=>{const t=e.target;
   if(!p)return msg('Fotos não encontradas.');showImgs([['Comprovante de despacho',p.comp],['Produto / caixa',p.prod]])}
  if(t.dataset.pr){const b=$('bd-'+t.dataset.pr);b.classList.add('printing');window.print();b.classList.remove('printing');}
  if(t.id==='b-pr'){const l=$('l-dr');l.classList.add('printing');window.print();l.classList.remove('printing');}});
+const hoje=()=>new Date().toLocaleDateString('en-CA');
+async function ckDone(d,v){const k=d+'_'+v+'_'+hoje();if(!CLOUD)return !!(S.cd||{})[k];try{return (await db.collection('ckdone').doc(k).get()).exists}catch(e){return false}}
+function markCk(d,v){const o={id:d+'_'+v+'_'+hoje(),dr:d,vh:v,data:hoje()};if(CLOUD)db.collection('ckdone').doc(o.id).set(o).catch(()=>{});else{S.cd=S.cd||{};S.cd[o.id]=1;save()}}
+async function chkNeed(){const c=$('e-cd').value.trim(),v=$('e-vh').value;if(!c||!v){$('ckbox').style.display='none';return}const d=await findDr(c);if(d)$('ckbox').style.display=(await ckDone(d.id,v))?'none':'block'}
+$('e-vh').addEventListener('change',chkNeed);$('e-cd').addEventListener('change',chkNeed);
 let sig=false,aphoto='';
 const cv=$('a-cv'),cx=cv.getContext('2d');
 function clrSig(){cx.fillStyle='#fff';cx.fillRect(0,0,cv.width,cv.height);sig=false}
@@ -270,19 +281,20 @@ function render2(){
  const M=S.mt.filter(m=>!fl.value||m.vh===fl.value).slice().sort((a,b)=>(b.data||'').localeCompare(a.data||''));
  $('m-tot').textContent='Custo total: '+money(M.reduce((s,m)=>s+(+m.custo||0),0))+' ('+M.length+' registro(s))';
  $('l-mt').innerHTML=M.length?`<table><tr><th>Data</th><th>Veículo</th><th>Km</th><th>Tipo</th><th>Custo</th><th>Observações</th><th></th></tr>${M.map(m=>`<tr><td>${br(m.data)}</td><td>${esc(vn(m.vh))}</td><td>${m.km}</td><td>${esc(m.tipo)}</td><td>${money(m.custo)}</td><td>${esc(m.obs||'')}</td><td><button class="s" data-rm="mt:${m.id}">Excluir</button></td></tr>`).join('')}</table>`:'<div class="empty">Nenhuma manutenção registrada.</div>';
- $('l-dp').innerHTML=S.dp.length?`<table><tr><th>Data</th><th>Transportadora</th><th>Destino</th><th>Pedido/nota</th><th>Rastreio</th><th>Obs.</th><th></th></tr>${S.dp.slice().sort((a,b)=>(b.data||'').localeCompare(a.data||'')).map(p=>`<tr><td>${br(p.data)}</td><td>${esc(p.transp)}</td><td>${esc(p.dest)}</td><td>${esc(p.ped)}</td><td>${esc(p.rast)}</td><td>${esc(p.obs)}</td><td><button class="s" data-dv="${p.id}">Ver fotos</button> <button class="s" data-rm="dp:${p.id}">Excluir</button></td></tr>`).join('')}</table>`:'<div class="empty">Nenhum despacho registrado.</div>'}
+ $('l-dp').innerHTML=S.dp.length?`<table><tr><th>Data</th><th>Transportadora</th><th>Destino</th><th>Pedido/nota</th><th>Rastreio</th><th>Obs.</th><th>Por</th><th></th></tr>${S.dp.slice().sort((a,b)=>(b.data||'').localeCompare(a.data||'')).map(p=>`<tr><td>${br(p.data)}</td><td>${esc(p.transp)}</td><td>${esc(p.dest)}</td><td>${esc(p.ped)}</td><td>${esc(p.rast)}</td><td>${esc(p.obs)}</td><td>${esc(p.por||'')}</td><td><button class="s" data-dv="${p.id}">Ver fotos</button> <button class="s" data-rm="dp:${p.id}">Excluir</button></td></tr>`).join('')}</table>`:'<div class="empty">Nenhum despacho registrado.</div>'}
 $('m-vh').onchange=()=>{const v=S.vh.find(a=>a.id===$('m-vh').value);if(v)$('m-km').value=v.od};
 $('m-fl').onchange=render;$('m-dt').value=$('p-dt').value=new Date().toISOString().slice(0,10);
 $('b-mt').onclick=()=>{const v=S.vh.find(a=>a.id===$('m-vh').value);if(!v)return msg('Cadastre um veículo antes.');const km=+$('m-km').value;if(!$('m-km').value)return msg('Informe o km no momento.');
  const o={id:uid(),vh:v.id,data:$('m-dt').value,km,tipo:$('m-tp').value,custo:+$('m-ct').value||0,obs:$('m-ob').value.trim()};S.mt.push(o);put('maint',o);
  const f={};if(km>v.od){v.od=km;f.od=km}if(o.tipo==='Troca de óleo'){v.uo=km;f.uo=km}if(o.tipo==='Revisão'){v.ur=km;f.ur=km}if(Object.keys(f).length)upd('vehicles',v.id,f);
  $('m-ct').value='';$('m-ob').value='';render();msg('Manutenção registrada.')};
-$('b-dp').onclick=async()=>{const f1=$('p-f1').files[0],f2=$('p-f2').files[0];
+$('b-sc3').onclick=()=>scan(c=>{$('p-cd').value=c.trim().toUpperCase()});
+$('b-dp').onclick=async()=>{const dd=await findDr($('p-cd').value);if(!dd)return msg('Crachá não encontrado. Leia o QR ou digite o código.');const f1=$('p-f1').files[0],f2=$('p-f2').files[0];
  if(!$('p-ds').value.trim())return msg('Informe o destino.');if(!f1||!f2)return msg('Tire as duas fotos: comprovante de despacho e produto/caixa.');
  let comp,prod;try{comp=await img2jpg(f1,1000,.6);prod=await img2jpg(f2,1000,.6)}catch(e){return msg('Não consegui abrir as fotos.')}
- const o={id:uid(),data:$('p-dt').value,transp:$('p-tr').value.trim(),dest:$('p-ds').value.trim(),ped:$('p-pd').value.trim(),rast:$('p-rt').value.trim(),obs:$('p-ob').value.trim()};
- if(CLOUD){try{await db.collection('dfiles').doc(o.id).set({comp,prod})}catch(e){return fe(e)}}else{S.df=S.df||{};S.df[o.id]={comp,prod}}
- S.dp.push(o);put('dispatches',o);['p-tr','p-ds','p-pd','p-rt','p-ob','p-f1','p-f2'].forEach(i=>$(i).value='');render();msg('Despacho registrado.')};
+ const o={id:uid(),data:$('p-dt').value,transp:$('p-tr').value.trim(),dest:$('p-ds').value.trim(),ped:$('p-pd').value.trim(),rast:$('p-rt').value.trim(),obs:$('p-ob').value.trim(),dr:dd.id,por:dd.nome};
+ if(CLOUD){try{const bt=db.batch();bt.set(db.collection('dispatches').doc(o.id),o);bt.set(db.collection('dfiles').doc(o.id),{comp,prod});await bt.commit()}catch(e){return fe(e)}S.dp.push(o)}else{S.df=S.df||{};S.df[o.id]={comp,prod};S.dp.push(o);save()}
+ ['p-cd','p-tr','p-ds','p-pd','p-rt','p-ob','p-f1','p-f2'].forEach(i=>$(i).value='');render();msg('Despacho registrado.')};
 let ipr=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();ipr=e;$('b-in').style.display='inline-block'});
 $('b-in').onclick=async()=>{if(!ipr)return;ipr.prompt();await ipr.userChoice;ipr=null;$('b-in').style.display='none'};
 if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
@@ -313,7 +325,7 @@ async function scan(cb){cb=cb||ident;
    busy=false}
   requestAnimationFrame(tick)};tick()}
 async function ident(code){code=code.trim().toUpperCase();const d=await findDr(code);if(!d)return msg('Crachá não encontrado: '+code);
- const x=S.en.find(a=>a.dr===d.id&&!a.hc);if(!x){$('e-cd').value=d.cod;return msg('Olá, '+d.nome+'! Preencha data, destino, veículo e odômetro e toque em Registrar saída.')}
+ const x=S.en.find(a=>a.dr===d.id&&!a.hc);if(!x){$('e-cd').value=d.cod;chkNeed();return msg('Olá, '+d.nome+'! Preencha data, destino, veículo e odômetro e toque em Registrar saída.')}
  msg('Olá, '+d.nome+'! Veículo: '+vn(x.vh));arrive(x)}
 function readQR(cb){const f=document.createElement('input');f.type='file';f.accept='image/*';f.setAttribute('capture','environment');
  f.onchange=()=>{const file=f.files[0];if(!file)return;const im=new Image();im.onload=()=>{const c=document.createElement('canvas');const s=Math.min(1,1000/Math.max(im.width,im.height));c.width=im.width*s;c.height=im.height*s;const x=c.getContext('2d');x.drawImage(im,0,0,c.width,c.height);const r=jsQR(x.getImageData(0,0,c.width,c.height).data,c.width,c.height);r&&r.data?cb(r.data):msg('Não consegui ler o QR. Tente de novo, mais perto e com boa luz, ou digite o código.')};im.src=URL.createObjectURL(file)};f.click()}
@@ -327,7 +339,7 @@ $('dok').onclick=async()=>{const u=$('du').value.trim(),p=$('dp').value;if(!u||p
  const h=await sha(p);
  if(!S.adm){S.adm={u,h};save()}else if(u!==S.adm.u||h!==S.adm.h)return ($('de').textContent='Usuário ou senha incorretos.');
  dlg.close();document.body.classList.add('isadm');$('b-lg').textContent='Sair';show('s-ent');render()};
-$('b-sc2').onclick=()=>scan(c=>{$('e-cd').value=c.trim().toUpperCase()});
+$('b-sc2').onclick=()=>scan(c=>{$('e-cd').value=c.trim().toUpperCase();chkNeed()});
 $('e-cd').onkeydown=e=>{if(e.key==='Enter')ident($('e-cd').value)};
 function report(m){const E=S.en.filter(e=>e.data&&e.data.startsWith(m));const f=t=>+t.slice(0,2)*60+ +t.slice(3,5);
  const mins=e=>{if(!e.hc)return null;let d=f(e.hc)-f(e.hs);if(d<0)d+=1440;return d};
