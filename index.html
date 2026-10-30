@@ -52,9 +52,9 @@ body:not(.isadm) .adm{display:none!important}
   <label>Crachá (código)<input id="e-cd" placeholder="ENT-0001"></label>
   <label>&nbsp;<button class="s" type="button" id="b-sc2" style="width:100%;padding:10px">📷 Ler crachá</button></label>
   <label>Veículo<select id="e-vh"></select></label>
-  <label>Data<input type="date" id="e-dt"></label>
+  <label>Data (automática)<input type="date" id="e-dt"></label>
   <label>Local / destino<input id="e-lc" placeholder="Endereço ou cliente"></label>
-  <label>Hora de saída<input type="time" id="e-hs"></label>
+  <label>Hora de saída (automática)<input type="time" id="e-hs"></label>
   <label>Odômetro saída (km)<input type="number" id="e-os" min="0"></label>
  </div>
  <div id="ckbox" style="display:none"><h2 style="font-size:15px;margin:14px 0 2px">Checklist de saída (primeira saída do dia neste veículo)</h2>
@@ -66,8 +66,11 @@ body:not(.isadm) .adm{display:none!important}
  <label>Observações / avarias<input id="e-av" placeholder="Obrigatório se algum item não estiver OK"></label></div>
  <button class="p" id="b-ent">Registrar saída</button></div>
  <div class="card"><h2>Ler crachá (saída ou chegada)</h2><button class="p" id="b-sc" style="margin-top:0">📷 Ler QR do crachá</button><video id="cam" playsinline muted style="display:none;width:100%;max-width:360px;margin-top:10px;border-radius:8px"></video><label style="margin-top:10px">Ou digite / bipe o código<input id="cd" placeholder="ENT-0001"></label></div>
- <div class="card adm"><h2>Relatório mensal</h2><label>Mês<input type="month" id="rm"></label><button class="p" id="b-rp">Gerar relatório</button> <button class="p" id="b-rw">📲 Enviar no WhatsApp</button> <button class="p" id="b-rm">✉️ Enviar por e-mail</button> <button class="s" id="b-rd">⬇️ Baixar .txt</button><pre id="rp" style="white-space:pre-wrap;font-family:inherit;margin-top:10px"></pre></div>
- <div class="card adm"><h2>Protocolos</h2><div class="tw" id="l-ent"></div></div>
+ <div class="card adm"><h2>Relatório de entregas</h2><div class="grid"><label>Data inicial *<input type="date" id="r1"></label><label>Data final *<input type="date" id="r2"></label><label>Hora inicial (opcional)<input type="time" id="r3"></label><label>Hora final (opcional)<input type="time" id="r4"></label></div><button class="p" id="b-rp">Gerar relatório</button> <button class="p" id="b-rw">📲 Enviar no WhatsApp</button> <button class="p" id="b-rm">✉️ Enviar por e-mail</button> <button class="s" id="b-rd">⬇️ Baixar .txt</button><pre id="rp" style="white-space:pre-wrap;font-family:inherit;margin-top:10px"></pre></div>
+ <div class="card adm"><h2>Protocolos</h2>
+ <div class="grid"><label>Data inicial<input type="date" id="f1"></label><label>Data final<input type="date" id="f2"></label><label>Hora inicial<input type="time" id="f3"></label><label>Hora final<input type="time" id="f4"></label><label>O horário vale para<select id="f5"><option value="s">Saída</option><option value="c">Chegada</option></select></label></div>
+ <div style="margin:8px 0"><button class="s" id="f-cl">Mostrar todos</button> <span id="f-n" style="color:var(--mu);font-size:14px"></span></div>
+ <div class="tw" id="l-ent"></div></div>
 </section>
 <section id="s-dr" class="adm">
  <div class="card"><h2>Cadastrar entregador</h2>
@@ -133,6 +136,11 @@ body:not(.isadm) .adm{display:none!important}
  <img id="a-pv" alt="" style="max-width:100%;display:none;margin-top:6px;border-radius:8px">
  <div id="a-er" style="color:#d00;margin-top:8px"></div>
  <div style="margin-top:10px;display:flex;gap:8px"><button class="p" id="a-ok" style="margin:0">Confirmar chegada</button><button class="s" id="a-cn">Cancelar</button></div></dialog>
+<dialog id="dlg5" style="border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);width:94%;max-width:360px"><h2>Editar entrega</h2>
+ <label>Data<input type="date" id="x-dt"></label><label style="margin-top:8px">Hora de saída<input type="time" id="x-hs"></label><label style="margin-top:8px">Local / destino<input id="x-lc"></label><label style="margin-top:8px">Km de saída<input type="number" id="x-os" min="0"></label>
+ <div id="x-fin"><label style="margin-top:8px">Hora de chegada<input type="time" id="x-hc"></label><label style="margin-top:8px">Km de chegada<input type="number" id="x-oc" min="0"></label><label style="margin-top:8px">Quem recebeu<input id="x-rc"></label></div>
+ <div id="x-er" style="color:#d00;margin-top:8px"></div>
+ <div style="margin-top:10px;display:flex;gap:8px"><button class="p" id="x-ok" style="margin:0">Salvar</button><button class="s" id="x-cn">Cancelar</button></div></dialog>
 <dialog id="dlg4" style="border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);width:94%;max-width:520px"><div id="vi"></div><button class="p" id="vi-x">Fechar</button></dialog>
 <dialog id="dlg2" style="border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);max-width:320px"><div id="aq"></div><input id="ai" type="number" min="0" style="display:none"><div style="margin-top:12px;display:flex;gap:8px"><button class="p" id="aok" style="margin:0">OK</button><button class="s" id="acn">Cancelar</button></div></dialog>
 <dialog id="dlg" style="border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);max-width:320px"><h2 id="dt"></h2><label>Usuário<input id="du" autocomplete="username"></label><label style="margin-top:8px">Senha<input id="dp" type="password" autocomplete="current-password"></label><div id="de" style="color:#d00;margin-top:8px"></div><div style="margin-top:12px;display:flex;gap:8px"><button class="p" id="dok" style="margin:0">Entrar</button><button class="s" id="dcn">Cancelar</button></div></dialog>
@@ -146,6 +154,14 @@ const K='entregas_v1';let S={dr:[],vh:[],en:[]};
 try{S=JSON.parse(localStorage.getItem(K))||S}catch(e){}
 const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}};
 const $=i=>document.getElementById(i);
+let off=0;const TZ='America/Araguaina';
+const sd=()=>new Date(Date.now()+off);
+const fD=d=>d.toLocaleDateString('en-CA',{timeZone:TZ});
+const fH=d=>d.toLocaleTimeString('pt-BR',{timeZone:TZ,hour:'2-digit',minute:'2-digit',hourCycle:'h23'});
+const hoje=()=>fD(sd()),now=()=>fH(sd());
+const SV=()=>firebase.firestore.FieldValue.serverTimestamp();
+async function syncClock(){if(!CLOUD)return;try{const r=db.collection('clock').doc('ping');await r.set({t:SV()});const s=await r.get({source:'server'}),t=s.data()&&s.data().t;if(t&&t.toMillis)off=t.toMillis()-Date.now();lockDt()}catch(e){}}
+function fixT(e){if(e.ts&&e.ts.toDate&&!e.mod){const d=e.ts.toDate();e.data=fD(d);e.hs=fH(d)}if(e.tc&&e.tc.toDate&&!e.mod)e.hc=fH(e.tc.toDate());return e}
 const FBCFG={apiKey:"AIzaSyATgKRHgsk2ale_TeSFFwa3DVC33_jXYK8",authDomain:"entregas-rodonorte.firebaseapp.com",projectId:"entregas-rodonorte",storageBucket:"entregas-rodonorte.firebasestorage.app",messagingSenderId:"752341814080",appId:"1:752341814080:web:1afcbda004f50245c648a5"};
 let db,auth;const CLOUD=!!(window.firebase&&firebase.initializeApp);
 if(CLOUD){try{firebase.initializeApp(FBCFG);db=firebase.firestore();auth=firebase.auth();auth.setPersistence(firebase.auth.Auth.Persistence.SESSION)}catch(e){console.error(e)}}
@@ -158,7 +174,7 @@ function del(c,id){CLOUD?db.collection(c).doc(id).delete().catch(fe):save()}
 function setCfg(){CLOUD?db.collection('config').doc('settings').set({email:S.email||'',wa:S.wa||''}).catch(fe):save()}
 async function findDr(c){c=(c||'').trim().toUpperCase();let d=S.dr.find(a=>a.cod===c);if(!d&&CLOUD&&c){try{const s=await db.collection('drivers').doc(c).get();if(s.exists)d=s.data()}catch(e){}}return d}
 let uV,uE,uD,uC,uP,uM;
-function subE(all){if(uE)uE();const q=all?db.collection('entries'):db.collection('entries').where('hc','==','');uE=q.onSnapshot(s=>{S.en=s.docs.map(d=>d.data());render()},e=>msg('Erro ao ler entregas: '+e.code))}
+function subE(all){if(uE)uE();const q=all?db.collection('entries'):db.collection('entries').where('hc','==','');uE=q.onSnapshot(s=>{S.en=s.docs.map(d=>fixT(d.data()));render()},e=>msg('Erro ao ler entregas: '+e.code))}
 function startAdmin(){stopAdmin();const er=e=>{msg('Esta conta não tem permissão de administrador ('+e.code+').');auth.signOut()};
  uD=db.collection('drivers').onSnapshot(s=>{S.dr=s.docs.map(d=>d.data());render()},er);
  subE(true);
@@ -176,7 +192,6 @@ function ask(q,def,type){return new Promise(res=>{const d=$('dlg2'),i=$('ai');i.
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,5);
 const br=d=>d?d.split('-').reverse().join('/'):'';
-const now=()=>new Date().toTimeString().slice(0,5);
 const tabs=[['s-ent','Entregas'],['s-dr','Entregadores'],['s-vh','Veículos'],['s-mt','Manutenção'],['s-dp','Despacho']];
 $('nav').innerHTML=tabs.map(t=>`<button data-t="${t[0]}"${['s-ent','s-dp'].includes(t[0])?'':' class="adm"'}>${t[1]}</button>`).join('');
 function show(id){document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===id));
@@ -188,17 +203,19 @@ function badge(d){return `<div class="badge" id="bd-${d.id}"><div class="lg"><im
 <div class="ph">${d.foto?`<img src="${d.foto}" alt="">`:'👤'}</div>
 <div class="nm">${esc(d.nome)}</div><div class="in">Doc: ${esc(d.doc)}</div><div class="in">Tel: ${esc(d.tel)}</div>
 <div class="qr" data-q="${esc(d.cod)}"></div><div class="id">${esc(d.cod)}</div></div>`}
-function render(){render0();render2();alerts();document.querySelectorAll('.qr').forEach(q=>{if(!q.firstChild&&window.QRCode)new QRCode(q,{text:q.dataset.q,width:150,height:150,correctLevel:QRCode.CorrectLevel.M})})}
+function lockDt(){const a=document.body.classList.contains('isadm');$('e-dt').disabled=!a;$('e-hs').disabled=!a;if(!a){$('e-dt').value=hoje();$('e-hs').value=now()}}
+setInterval(lockDt,30000);
+function render(){render0();render2();alerts();lockDt();document.querySelectorAll('.qr').forEach(q=>{if(!q.firstChild&&window.QRCode)new QRCode(q,{text:q.dataset.q,width:150,height:150,correctLevel:QRCode.CorrectLevel.M})})}
 function render0(){
 
  $('e-vh').innerHTML=S.vh.map(v=>`<option value="${v.id}">${esc(v.placa)} · ${esc(v.modelo)}</option>`).join('')||'<option value="">Cadastre um veículo</option>';
  $('l-dr').innerHTML=S.dr.length?S.dr.map(d=>`<div style="display:inline-block;vertical-align:top">${badge(d)}<div style="font-size:13px;margin-bottom:6px">${vTxt('CNH',d.cnh)} <button class="s" data-mc="${d.id}">Alterar</button></div><div><button class="s" data-pr="${d.id}">🖨️ Imprimir</button> <button class="s" data-rm="dr:${d.id}">Excluir</button></div></div>`).join(''):'<div class="empty">Nenhum entregador cadastrado.</div>';
  $('l-vh').innerHTML=S.vh.length?`<table><tr><th>Placa</th><th>Modelo</th><th>Tipo</th><th>Odômetro</th><th>Licenc.</th><th>Manutenção</th><th></th></tr>${S.vh.map(v=>`<tr><td>${esc(v.placa)}</td><td>${esc(v.modelo)}</td><td>${esc(v.tipo)}</td><td>${v.od} km</td><td>${vTxt('',v.lic)} <button class="s" data-ml="${v.id}">Alterar</button></td><td>${mt(v)}</td><td><button class="s" data-mo="${v.id}">Óleo feito</button> <button class="s" data-mr="${v.id}">Revisão feita</button> <button class="s" data-rk="${v.id}">Pedir checklist</button> <button class="s" data-rm="vh:${v.id}">Excluir</button></td></tr>`).join('')}</table>`:'<div class="empty">Nenhum veículo cadastrado.</div>';
- $('l-ent').innerHTML=S.en.length?`<table><tr><th>Data</th><th>Entregador</th><th>Veículo</th><th>Local</th><th>Saída</th><th>Km saída</th><th>Chegada</th><th>Km chegada</th><th>Rodado</th><th>Checklist</th><th>Recebedor</th><th></th></tr>${S.en.slice().reverse().map(e=>`<tr><td>${br(e.data)}</td><td>${esc(dn(e.dr))}</td><td>${esc(vn(e.vh))}</td><td>${esc(e.local)}</td><td>${e.hs}</td><td>${e.os}</td>
+ const FL=fEnt();$('f-n').textContent=FL.length+' de '+S.en.length+' protocolo(s). Entregas em rota aparecem sempre.';$('l-ent').innerHTML=FL.length?`<table><tr><th></th><th>Data</th><th>Entregador</th><th>Veículo</th><th>Local</th><th>Saída</th><th>Km saída</th><th>Chegada</th><th>Km chegada</th><th>Rodado</th><th>Checklist</th><th>Recebedor</th><th></th></tr>${FL.map(e=>`<tr><td><button class="s" data-ed="${e.id}">Editar</button></td><td>${br(e.data)}</td><td>${esc(dn(e.dr))}</td><td>${esc(vn(e.vh))}</td><td>${esc(e.local)}${e.mod?` <small title="Editado em ${esc(e.mod)}">✏️</small>`:''}</td><td>${e.hs}</td><td>${e.os}</td>
  <td>${e.hc||'<span class="pill">em rota</span>'}</td><td>${e.oc??''}</td><td>${e.oc!=null?(e.oc-e.os)+' km':''}</td><td>${!e.ck?'—':String(e.ck).includes('0')?'⚠️ '+esc(e.av||''):'✓'}</td><td>${esc(e.rec||'')} ${e.pf?`<button class="s" data-pv="${e.id}">Ver comprovante</button>`:''}</td>
  <td>${e.hc?'':`<button class="s" data-ch="${e.id}">Registrar chegada</button> `}<button class="s" data-rm="en:${e.id}">Excluir</button></td></tr>`).join('')}</table>`:'<div class="empty">Nenhum protocolo registrado.</div>';
 }
-$('e-dt').value=new Date().toISOString().slice(0,10);$('e-hs').value=now();
+$('e-dt').value=hoje();$('e-hs').value=now();
 $('e-vh').onchange=()=>{const v=S.vh.find(x=>x.id===$('e-vh').value);if(v)$('e-os').value=v.od};
 $('b-vh').onclick=()=>{const p=$('v-pl').value.trim().toUpperCase(),m=$('v-md').value.trim();
  if(!p||!m)return msg('Informe placa e modelo.');
@@ -214,20 +231,30 @@ $('b-dr').onclick=()=>{const n=$('d-nm').value.trim();if(!n)return msg('Informe 
  r.onload=()=>{im.onload=()=>{const c=document.createElement('canvas');c.width=c.height=200;const x=c.getContext('2d');
   const s=Math.min(im.width,im.height);x.drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,200,200);add(c.toDataURL('image/jpeg',.8))};im.src=r.result};
  r.readAsDataURL(f);};
-$('b-ent').onclick=async()=>{const dd=await findDr($('e-cd').value);if(!dd)return msg('Crachá não encontrado. Fotografe o QR ou digite o código.');if(!$('e-vh').value)return msg('Escolha o veículo.');if(S.en.some(a=>a.dr===dd.id&&!a.hc))return msg('Você já tem uma entrega em rota. Registre a chegada primeiro.');
+$('b-ent').onclick=async()=>{await syncClock();lockDt();const dd=await findDr($('e-cd').value);if(!dd)return msg('Crachá não encontrado. Fotografe o QR ou digite o código.');if(!$('e-vh').value)return msg('Escolha o veículo.');if(S.en.some(a=>a.dr===dd.id&&!a.hc))return msg('Você já tem uma entrega em rota. Registre a chegada primeiro.');
  if(dd.cnh&&daysTo(dd.cnh)<0)return msg('Sua CNH está vencida ('+br(dd.cnh)+'). Fale com o responsável antes de sair.');
  const vh0=S.vh.find(a=>a.id===$('e-vh').value);if(vh0&&vh0.lic&&daysTo(vh0.lic)<0)return msg('O licenciamento deste veículo está vencido ('+br(vh0.lic)+'). Escolha outro ou fale com o responsável.');
  const vid=$('e-vh').value,need=!(await ckDone(dd.id,vid));$('ckbox').style.display=need?'block':'none';
  let cks='',av='';if(need){cks=[...document.querySelectorAll('.ck')].map(c=>c.checked?1:0).join('');av=$('e-av').value.trim();
   if(cks.includes('0')&&!av)return msg('Primeira saída de hoje com este veículo: preencha o checklist de saída (marque todos os itens ou descreva o problema) e toque em Registrar saída de novo.')}
  if(!$('e-lc').value.trim()||$('e-os').value==='')return msg('Informe local e odômetro de saída.');
- const en={id:uid(),dr:dd.id,vh:$('e-vh').value,data:$('e-dt').value,local:$('e-lc').value.trim(),hs:$('e-hs').value,os:+$('e-os').value,hc:'',oc:null,ck:cks,av:av};S.en.push(en);put('entries',en);if(need)markCk(dd.id,vid);$('ckbox').style.display='none';document.querySelectorAll('.ck').forEach(c=>c.checked=false);$('e-av').value='';$('e-lc').value='';$('e-cd').value='';$('e-hs').value=now();render();msg('Saída registrada. Boa entrega, '+dd.nome+'!');};
+ const en={id:uid(),dr:dd.id,vh:$('e-vh').value,data:$('e-dt').value,local:$('e-lc').value.trim(),hs:$('e-hs').value,os:+$('e-os').value,hc:'',oc:null,ck:cks,av:av,...(CLOUD?{ts:SV()}:{})};S.en.push(en);put('entries',en);if(need)markCk(dd.id,vid);$('ckbox').style.display='none';document.querySelectorAll('.ck').forEach(c=>c.checked=false);$('e-av').value='';$('e-lc').value='';$('e-cd').value='';$('e-hs').value=now();render();msg('Saída registrada. Boa entrega, '+dd.nome+'!');};
 document.body.addEventListener('click',async e=>{const t=e.target;
  if(t.dataset.ch)arrive(S.en.find(a=>a.id===t.dataset.ch));
  if(t.dataset.mo){const v=S.vh.find(a=>a.id===t.dataset.mo);v.uo=v.od;upd('vehicles',v.id,{uo:v.uo});addMt(v,'Troca de óleo',v.od,0,'');render();}
  if(t.dataset.mr){const v=S.vh.find(a=>a.id===t.dataset.mr);v.ur=v.od;upd('vehicles',v.id,{ur:v.ur});addMt(v,'Revisão',v.od,0,'');render();}
  if(t.dataset.rm){const[k,id]=t.dataset.rm.split(':');if(await ask('Excluir este registro?')===null)return;
   S[k]=S[k].filter(a=>a.id!==id);del({dr:'drivers',vh:'vehicles',en:'entries',mt:'maint',dp:'dispatches'}[k],id);if(CLOUD&&k==='en')db.collection('proofs').doc(id).delete().catch(()=>{});if(CLOUD&&k==='dp')db.collection('dfiles').doc(id).delete().catch(()=>{});render();}
+ if(t.dataset.ed){const x=S.en.find(a=>a.id===t.dataset.ed);if(!x)return;const fin=!!x.hc;
+  $('x-dt').value=x.data;$('x-hs').value=x.hs;$('x-lc').value=x.local;$('x-os').value=x.os;$('x-hc').value=x.hc||'';$('x-oc').value=x.oc??'';$('x-rc').value=x.rec||'';
+  $('x-fin').style.display=fin?'block':'none';$('x-er').textContent='';$('x-cn').onclick=()=>$('dlg5').close();
+  $('x-ok').onclick=async()=>{const d=$('x-dt').value,s=$('x-hs').value,l=$('x-lc').value.trim(),o=+$('x-os').value,er=$('x-er');
+   if(!d||!s||!l||$('x-os').value==='')return er.textContent='Preencha data, hora de saída, local e km de saída.';
+   const f={data:d,hs:s,local:l,os:o,mod:br(hoje())+' '+now()};
+   if(fin){const hc=$('x-hc').value,oc=+$('x-oc').value;if(!hc||$('x-oc').value==='')return er.textContent='Preencha hora e km de chegada.';if(oc<o)return er.textContent='O km de chegada não pode ser menor que o de saída.';f.hc=hc;f.oc=oc;f.rec=$('x-rc').value.trim()}
+   if(CLOUD){try{await db.collection('entries').doc(x.id).update(f)}catch(e){return er.textContent='Não foi possível salvar: '+(e.code||e.message)}}
+   Object.assign(x,f);if(!CLOUD)save();$('dlg5').close();render();msg('Entrega atualizada.')};
+  $('dlg5').showModal()}
  if(t.dataset.rk){if(await ask('Hoje, todos os entregadores terão que refazer o checklist neste veículo na próxima saída. Confirmar?')===null)return;
   if(CLOUD){try{const s=await db.collection('ckdone').where('vh','==',t.dataset.rk).get();const bt=db.batch();s.docs.forEach(d=>bt.delete(d.ref));await bt.commit()}catch(e){return fe(e)}}else{S.cd=Object.fromEntries(Object.entries(S.cd||{}).filter(([k])=>!k.includes('_'+t.dataset.rk+'_')));save()}
   msg('Pronto: o próximo entregador a sair com este veículo fará o checklist.')}
@@ -239,7 +266,6 @@ document.body.addEventListener('click',async e=>{const t=e.target;
   if(!p)return msg('Fotos não encontradas.');showImgs([['Comprovante de despacho',p.comp],['Produto / caixa',p.prod]])}
  if(t.dataset.pr){const b=$('bd-'+t.dataset.pr);b.classList.add('printing');window.print();b.classList.remove('printing');}
  if(t.id==='b-pr'){const l=$('l-dr');l.classList.add('printing');window.print();l.classList.remove('printing');}});
-const hoje=()=>new Date().toLocaleDateString('en-CA');
 async function ckDone(d,v){const k=d+'_'+v+'_'+hoje();if(!CLOUD)return !!(S.cd||{})[k];try{return (await db.collection('ckdone').doc(k).get()).exists}catch(e){return false}}
 function markCk(d,v){const o={id:d+'_'+v+'_'+hoje(),dr:d,vh:v,data:hoje()};if(CLOUD)db.collection('ckdone').doc(o.id).set(o).catch(()=>{});else{S.cd=S.cd||{};S.cd[o.id]=1;save()}}
 async function chkNeed(){const c=$('e-cd').value.trim(),v=$('e-vh').value;if(!c||!v){$('ckbox').style.display='none';return}const d=await findDr(c);if(d)$('ckbox').style.display=(await ckDone(d.id,v))?'none':'block'}
@@ -263,17 +289,17 @@ function arriveDlg(x){return new Promise(res=>{const d=$('dlg3');clrSig();aphoto
  d.showModal()})}
 function showImgs(a){const b=$('vi');b.textContent='';a.forEach(([t,s])=>{const p=document.createElement('h3');p.textContent=t;const im=document.createElement('img');im.src=s;im.style.cssText='max-width:100%;border-radius:8px;background:#fff';b.append(p,im)});$('dlg4').showModal()}
 $('vi-x').onclick=()=>$('dlg4').close();
-async function arrive(x){const r=await arriveDlg(x);if(!r)return;
+async function arrive(x){const r=await arriveDlg(x);if(!r)return;await syncClock();
  const v=S.vh.find(a=>a.id===x.vh),old=v?v.od:0,up=v&&r.o>v.od;
  if(CLOUD){try{await db.collection('proofs').doc(x.id).set({ass:r.ass,foto:r.foto})}catch(e){return fe(e)}}else{S.pr=S.pr||{};S.pr[x.id]={ass:r.ass,foto:r.foto}}
  x.oc=r.o;x.hc=now();x.rec=r.rec;x.pf=true;if(up)v.od=r.o;
- upd('entries',x.id,{hc:x.hc,oc:x.oc,rec:x.rec,pf:true});
+ upd('entries',x.id,{hc:x.hc,oc:x.oc,rec:x.rec,pf:true,...(CLOUD?{tc:SV()}:{})});
  if(up&&CLOUD)db.collection('vehicles').doc(v.id).update({od:v.od}).catch(()=>{});render();
  msg('Entrega concluída. Comprovante salvo.');
  if(v){const p=due(v).filter(a=>a.left<=500);if(p.length)msg('⚠️ '+v.placa+': '+p.map(a=>a.t+(a.left<=0?' vencida':' em '+a.left+' km')).join(' e ')+'. Avise o responsável.')}}
-const daysTo=d=>Math.round((new Date(d+'T00:00:00')-new Date(new Date().toDateString()))/864e5);
+const daysTo=d=>Math.round((new Date(d+'T00:00:00')-new Date(hoje()+'T00:00:00'))/864e5);
 function vTxt(l,d){if(!d)return (l?l+': ':'')+'—';const n=daysTo(d),c=n<0?'<b style="color:#d00">VENCIDA</b>':n<=30?'<b style="color:#d98a00">'+n+' dia(s)</b>':'';return (l?l+': ':'')+br(d)+(c?' · '+c:'')}
-function addMt(v,tp,km,ct,ob){const o={id:uid(),vh:v.id,data:new Date().toISOString().slice(0,10),km,tipo:tp,custo:ct,obs:ob};S.mt.push(o);put('maint',o)}
+function addMt(v,tp,km,ct,ob){const o={id:uid(),vh:v.id,data:hoje(),km,tipo:tp,custo:ct,obs:ob};S.mt.push(o);put('maint',o)}
 const money=n=>'R$ '+(+n||0).toFixed(2).replace('.',',');
 function render2(){
  const vo=S.vh.map(v=>`<option value="${v.id}">${esc(v.placa)} · ${esc(v.modelo)}</option>`).join('');
@@ -283,7 +309,7 @@ function render2(){
  $('l-mt').innerHTML=M.length?`<table><tr><th>Data</th><th>Veículo</th><th>Km</th><th>Tipo</th><th>Custo</th><th>Observações</th><th></th></tr>${M.map(m=>`<tr><td>${br(m.data)}</td><td>${esc(vn(m.vh))}</td><td>${m.km}</td><td>${esc(m.tipo)}</td><td>${money(m.custo)}</td><td>${esc(m.obs||'')}</td><td><button class="s" data-rm="mt:${m.id}">Excluir</button></td></tr>`).join('')}</table>`:'<div class="empty">Nenhuma manutenção registrada.</div>';
  $('l-dp').innerHTML=S.dp.length?`<table><tr><th>Data</th><th>Transportadora</th><th>Destino</th><th>Pedido/nota</th><th>Rastreio</th><th>Obs.</th><th>Por</th><th></th></tr>${S.dp.slice().sort((a,b)=>(b.data||'').localeCompare(a.data||'')).map(p=>`<tr><td>${br(p.data)}</td><td>${esc(p.transp)}</td><td>${esc(p.dest)}</td><td>${esc(p.ped)}</td><td>${esc(p.rast)}</td><td>${esc(p.obs)}</td><td>${esc(p.por||'')}</td><td><button class="s" data-dv="${p.id}">Ver fotos</button> <button class="s" data-rm="dp:${p.id}">Excluir</button></td></tr>`).join('')}</table>`:'<div class="empty">Nenhum despacho registrado.</div>'}
 $('m-vh').onchange=()=>{const v=S.vh.find(a=>a.id===$('m-vh').value);if(v)$('m-km').value=v.od};
-$('m-fl').onchange=render;$('m-dt').value=$('p-dt').value=new Date().toISOString().slice(0,10);
+$('m-fl').onchange=render;$('m-dt').value=$('p-dt').value=hoje();
 $('b-mt').onclick=()=>{const v=S.vh.find(a=>a.id===$('m-vh').value);if(!v)return msg('Cadastre um veículo antes.');const km=+$('m-km').value;if(!$('m-km').value)return msg('Informe o km no momento.');
  const o={id:uid(),vh:v.id,data:$('m-dt').value,km,tipo:$('m-tp').value,custo:+$('m-ct').value||0,obs:$('m-ob').value.trim()};S.mt.push(o);put('maint',o);
  const f={};if(km>v.od){v.od=km;f.od=km}if(o.tipo==='Troca de óleo'){v.uo=km;f.uo=km}if(o.tipo==='Revisão'){v.ur=km;f.ur=km}if(Object.keys(f).length)upd('vehicles',v.id,f);
@@ -341,14 +367,19 @@ $('dok').onclick=async()=>{const u=$('du').value.trim(),p=$('dp').value;if(!u||p
  dlg.close();document.body.classList.add('isadm');$('b-lg').textContent='Sair';show('s-ent');render()};
 $('b-sc2').onclick=()=>scan(c=>{$('e-cd').value=c.trim().toUpperCase();chkNeed()});
 $('e-cd').onkeydown=e=>{if(e.key==='Enter')ident($('e-cd').value)};
-function report(m){const E=S.en.filter(e=>e.data&&e.data.startsWith(m));const f=t=>+t.slice(0,2)*60+ +t.slice(3,5);
+function getRep(){const a=$('r1').value,b=$('r2').value,h1=$('r3').value,h2=$('r4').value;
+ if(!a||!b){msg('Informe a data inicial e a data final.');return null}
+ if(a>b){msg('A data inicial não pode ser depois da data final.');return null}
+ if(h1&&h2&&h1>h2){msg('A hora inicial não pode ser depois da hora final.');return null}
+ return report(a,b,h1,h2)}
+function report(a,b,h1,h2){const E=S.en.filter(e=>e.data&&e.data>=a&&e.data<=b&&(!h1||e.hs>=h1)&&(!h2||e.hs<=h2));const f=t=>+t.slice(0,2)*60+ +t.slice(3,5);
  const mins=e=>{if(!e.hc)return null;let d=f(e.hc)-f(e.hs);if(d<0)d+=1440;return d};
  const by={},lc={};let lg=null;
  E.forEach(e=>{const n=dn(e.dr),d=mins(e),b=by[n]||(by[n]={c:0,t:0,k:0});b.c++;if(d!=null){b.t+=d;b.k++;if(!lg||d>lg.d)lg={d,n,l:e.local}}
   const l=e.local.trim().toLowerCase(),o=lc[l]||(lc[l]={n:e.local.trim(),c:0});o.c++});
  const top=(o,g)=>Object.entries(o).sort((a,b)=>g(b[1])-g(a[1]))[0];
  const h=x=>Math.floor(x/60)+'h'+String(Math.round(x%60)).padStart(2,'0');
- const L=['RODONORTE AUTO PEÇAS — RELATÓRIO DE ENTREGAS — '+m.split('-').reverse().join('/'),'','Total de entregas: '+E.length];
+ const L=['RODONORTE AUTO PEÇAS — RELATÓRIO DE ENTREGAS','Período: '+br(a)+' a '+br(b)+(h1||h2?' (saídas das '+(h1||'00:00')+' às '+(h2||'23:59')+')':''),'','Total de entregas: '+E.length];
  if(E.length){const a=top(by,b=>b.c);L.push('Entregador com mais entregas: '+a[0]+' ('+a[1].c+')');
   const t=Object.entries(by).filter(x=>x[1].k).sort((a,b)=>b[1].t/b[1].k-a[1].t/a[1].k)[0];
   if(t)L.push('Entregador com maior tempo médio por entrega: '+t[0]+' ('+h(t[1].t/t[1].k)+')');
@@ -358,17 +389,22 @@ function report(m){const E=S.en.filter(e=>e.data&&e.data.startsWith(m));const f=
  S.vh.forEach(v=>{const d=due(v);L.push(v.placa+' ('+v.modelo+') — '+v.od+' km'+(d.length?': '+d.map(x=>x.t+' '+(x.left<=0?'VENCIDA':'faltam '+x.left+' km')).join('; '):': sem intervalos cadastrados'))});
  if(!S.vh.length)L.push('Nenhum veículo cadastrado.');
  return L.join('\n')}
-$('rm').value=new Date().toISOString().slice(0,7);
-$('b-rd').onclick=async()=>{const t=report($('rm').value);$('rp').textContent=t;try{const d=window.claude?await claude.use('downloads'):null;if(!d){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download='relatorio-'+$('rm').value+'.txt';a.click();return}await d.save({filename:'relatorio-'+$('rm').value+'.txt',data:t})}catch(e){}};
-$('b-rp').onclick=()=>{$('rp').textContent=report($('rm').value)};
-$('b-rm').onclick=()=>{const t=report($('rm').value);$('rp').textContent=t;if(!S.email)return msg('Cadastre o e-mail na aba Veículos.');
+$('r1').value=$('r2').value=$('f1').value=$('f2').value=hoje();
+function fEnt(){const a=$('f1').value,b=$('f2').value,h1=$('f3').value,h2=$('f4').value,c=$('f5').value==='c';
+ return S.en.filter(e=>{if(!e.hc)return true;if(a&&e.data<a)return false;if(b&&e.data>b)return false;const t=c?e.hc:e.hs;if(h1&&t<h1)return false;if(h2&&t>h2)return false;return true}).slice().reverse()}
+['f1','f2','f3','f4','f5'].forEach(i=>$(i).onchange=render);
+$('f-cl').onclick=()=>{['f1','f2','f3','f4'].forEach(i=>$(i).value='');render()};
+$('b-rd').onclick=async()=>{const t=getRep();if(!t)return;$('rp').textContent=t;try{const d=window.claude?await claude.use('downloads'):null;if(!d){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download='relatorio-'+$('r1').value+'_a_'+$('r2').value+'.txt';a.click();return}await d.save({filename:'relatorio-'+$('r1').value+'_a_'+$('r2').value+'.txt',data:t})}catch(e){}};
+$('b-rp').onclick=()=>{const t=getRep();if(t)$('rp').textContent=t};
+$('b-rm').onclick=()=>{const t=getRep();if(!t)return;$('rp').textContent=t;if(!S.email)return msg('Cadastre o e-mail na aba Veículos.');
  const a=document.createElement('a');a.href='mailto:'+S.email+'?subject='+encodeURIComponent('Relatório mensal de entregas')+'&body='+encodeURIComponent(t);a.click()};
 $('b-sc').onclick=()=>scan();$('cd').onkeydown=e=>{if(e.key==='Enter'){ident($('cd').value);$('cd').value=''}};
 $('wa').value=S.wa||'';$('wa').onchange=()=>{S.wa=$('wa').value;setCfg();render()};
 function waLink(t){let d=(S.wa||'').replace(/\D/g,'');if(d&&d.length<=11)d='55'+d;return 'https://wa.me/'+d+'?text='+encodeURIComponent(t)}
-$('b-rw').onclick=()=>{const t=report($('rm').value);$('rp').textContent=t;window.open(waLink(t),'_blank')};
+$('b-rw').onclick=()=>{const t=getRep();if(!t)return;$('rp').textContent=t;window.open(waLink(t),'_blank')};
 $('em').value=S.email||'';$('em').onchange=()=>{S.email=$('em').value;setCfg();render()};
 $('st').textContent=CLOUD?'☁️ nuvem':'💾 modo local';
+if(CLOUD){syncClock();setInterval(syncClock,300000)}
 if(CLOUD){
  if(LOCAL.dr.length||LOCAL.vh.length||LOCAL.en.length)$('mg').style.display='block';
  $('b-mg').onclick=async()=>{if(await ask('Enviar os dados antigos deste aparelho para a nuvem?')===null)return;
